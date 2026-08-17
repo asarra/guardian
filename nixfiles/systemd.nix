@@ -40,6 +40,7 @@ in {
             -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
             -device vfio-pci,host=26:00.1,bus=p
         '';
+        };
 
       #second-vm
 
