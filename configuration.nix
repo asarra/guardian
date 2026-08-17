@@ -70,7 +70,6 @@ in
   console.keyMap = user.origin;
 
   users = {
-    defaultUserShell = pkgs.zsh;
     users."${user.name}" = {
       isNormalUser = true;
       description = user.name;
