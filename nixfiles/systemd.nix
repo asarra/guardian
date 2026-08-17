@@ -1,10 +1,11 @@
 { pkgs, ... }:
 
 let
-  mkSystemSimple = { description, exec, timeout ? 30 }: { # Helper template
+  mkSystemSimple = { description, exec, preStart ? "", timeout ? 30 }: { # Helper template
     description = description; # Manual: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
     after = [ "network.target" "local-fs.target" ];
     wantedBy = [ "multi-user.target" ];
+    preStart = preStart;
     serviceConfig = {
       User = "root";
       ExecStart = exec;
