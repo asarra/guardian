@@ -49,7 +49,7 @@ in
     kernelParams = [ "vfio-pci.ids=10de:1e84,10de:10f8" "amd_iommu=on" "iommu=pt" ] ++ [ "quiet" ] ++ [ "zswap.enabled=1" "zswap.max_pool_percent=25" "zswap.shrinker_enabled=1" ]; # https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt # https://ryantm.github.io/nixpkgs/functions/library/lists
     kernelModules = [ "vfio_pci" "vfio" "vfio_iommu_type1" ] ++ config.boot.initrd.availableKernelModules ++ config.boot.initrd.kernelModules; # See: https://github.com/triton/triton
     kernel.sysctl = { "vm.swappiness" = 40; "vm.page-cluster" = 2; }; # swap specific kernel tunables
-    blacklistedKernelModules = [ "nvidia" "nouveau" ];
+    blacklistedKernelModules = [ "nvidia" "nouveau" "nvidia_drm" "nvidia_modeset" "ucsi_ccg" ];
     initrd.verbose = false;
   };
 
@@ -61,10 +61,7 @@ in
     networkmanager.enable = true; # Console: nmcli and nmtui
     useDHCP = mkForce true;
     nameservers = [ "9.9.9.9" "1.1.1.1" ]; # dns
-    firewall = {
-      allowPing = true;
-      allowedTCPPorts = [ 22 ];
-    };
+    firewall.allowPing = true;
   };
 
   # Time zone, internationalisation and console mapping
@@ -90,8 +87,13 @@ in
 
   services.openssh = {
     enable = true;
-    settings=PermitRootLogin = "yes";
-    PasswordAuthentification = true;
+    openFirewall = true;
+    settings = {
+      PasswordAuthentication = true;
+      PermitRootLogin = "yes";
+      MaxAuthTries = 3;
+      PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
+    };
   };
 
   virtualisation = {
