@@ -59,7 +59,7 @@ in
   networking = {
     hostName = device.host;
     networkmanager.enable = true; # Console: nmcli and nmtui
-    useDHCP = mkForce true; #  I definitely want this
+    useDHCP = mkForce true;
     nameservers = [ "9.9.9.9" "1.1.1.1" ]; # dns
     firewall = {
       allowPing = true;
@@ -88,8 +88,11 @@ in
 
   environment.systemPackages = with pkgs; [ git btop fastfetch ];
 
-  services.openssh.enable = true;
-  services.openssh.settings=PermitRootLogin = "yes";
+  services.openssh = {
+    enable = true;
+    settings=PermitRootLogin = "yes";
+    PasswordAuthentification = true;
+  };
 
   virtualisation = {
     #docker = { # Installs docker and sets it up
