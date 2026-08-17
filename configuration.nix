@@ -124,8 +124,6 @@ in
         exec = ''
           ${pkgs.qemu_kvm}/bin/qemu-system-x86_64 \
             -enable-kvm -m 8G -smp 8 -vga none -nographic -cpu host,kvm=off \
-            -drive if=pflash,format=raw,readonly=on,file=/run/current-system/sw/share/OVMF/OVMF_CODE.fd \
-            -drive if=pflash,format=raw,snapshot=on,file=/run/current-system/sw/share/OVMF/OVMF_VARS.fd \
             -device pcie-root-port,id=p \
             -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
             -drive file=/var/lib/my-vms/colt-install.iso,media=cdrom \
