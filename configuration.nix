@@ -114,9 +114,7 @@ in
         preStart = ''
           mkdir -p /var/lib/my-vms
           [ -f /var/lib/my-vms/colt-disk.qcow2 ] || ${pkgs.qemu_kvm}/bin/qemu-img create -f qcow2 /var/lib/my-vms/colt-disk.qcow2 50G
-          if [ ! -f /var/lib/my-vms/colt-install.iso ]; then
-            ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/coreos.iso https://github.com/asarra/colt/releases/download/latest/coreos.iso
-          fi
+          [ -f /var/lib/my-vms/colt-install.iso ] || ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/coreos.iso https://github.com/asarra/colt/releases/download/latest/coreos.iso
         '';
         exec = ''
           ${pkgs.qemu_kvm}/bin/qemu-system-x86_64 \
@@ -128,9 +126,6 @@ in
             -device vfio-pci,host=26:00.1,bus=p
         '';
         };
-
-      #second-vm
-
     };
   };
 
