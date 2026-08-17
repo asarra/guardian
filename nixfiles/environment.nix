@@ -21,10 +21,6 @@
     #  rootless.daemon.settings.data-root = "~/.local/share/docker"; # https://discourse.nixos.org/t/rootless-docker-systemd-resolved-and-dns-inside-containers/47030/4
     #};
 
-    libvirtd = { # Installs libvirt and sets it up
-      enable = true; # If you cannot activate the "default" internet, reboot and try it again with virsh # https://bbs.archlinux.org/viewtopic.php?id=284089
-      qemu.ovmf.enable = true;
-      qemu.ovmf.packages = [ pkgs.OVMFFull.fd ];
-    };
+    libvirtd.enable = true; # If you cannot activate the "default" internet, reboot and try it again with virsh # https://bbs.archlinux.org/viewtopic.php?id=284089
   };
 }
