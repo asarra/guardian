@@ -7,7 +7,7 @@
 
 let
   user = { name = "asarra"; origin = "de"; time = "Europe/Berlin"; language = "en_US.UTF-8"; };
-  device = { host = "guardian"; mode = "ondemand"; cores = 2; };
+  device = { host = "guardian"; mode = "ondemand"; cores = 16; };
   inherit (lib) mkForce;
   mkSystemSimple = { description, exec, preStart ? "", timeout ? 30 }: { # Helper template
     description = description; # Manual: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
