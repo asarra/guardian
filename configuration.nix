@@ -42,7 +42,7 @@ in
     };
 
     # Kernel
-    kernelPackages = pkgs.linuxPackages_hardened;
+    kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [ "vfio-pci.ids=10de:1e84,10de:10f8" "amd_iommu=on" "iommu=pt" ] ++ [ "quiet" ] ++ [ "zswap.enabled=1" "zswap.max_pool_percent=25" "zswap.shrinker_enabled=1" ]; # https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt
     kernelModules = [ "vfio_pci" "vfio" "vfio_iommu_type1" ] ++ config.boot.initrd.availableKernelModules ++ config.boot.initrd.kernelModules; # See: https://github.com/triton/triton
     kernel.sysctl = { "vm.swappiness" = 40; "vm.page-cluster" = 2; }; # swap specific kernel tunables
