@@ -64,7 +64,7 @@ in
     };
   };
 
-  # Time zone, internationalisation, console mapping and fonts
+  # Time zone, internationalisation and console mapping
   time.timeZone = user.time;
   i18n.defaultLocale = user.language;
   console.keyMap = user.origin;
