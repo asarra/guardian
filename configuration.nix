@@ -1,6 +1,6 @@
 # Note: I refuse to use flake.nix and home manager.
 # Recover fix tip: boot into live iso, lsblk, sudo nixos-enter --root <Mounted_Device_Path>, su - asarra, (commands), exit
-# Gems: https://github.com/gianarb/dotfiles/tree/12ab8fa01d3d8efd0e96f7287a2447df3013a17f https://github.com/NixOS/nixos-hardware
+# Gems: https://github.com/gianarb/dotfiles/tree/12ab8fa01d3d8efd0e96f7287a2447df3013a17f https://github.com/NixOS/nixos-hardware https://nix.dev/manual/nix/2.23/language/builtins
 # Flow: Grapical install first without swap. We'll add swap file later. This way we won't have to touch hardware-configuration.nix at all
 
 { config, pkgs, lib, ... }:
@@ -33,7 +33,6 @@ in
         efiSupport = true;
         devices = ["nodev"];
         configurationLimit = 3;
-        theme = builtins.fetchGit "https://github.com/HenriqueLopes42/themeGrub.CyberEXS"; # Man: https://nix.dev/manual/nix/2.23/language/builtins
         # More entries
         useOSProber = true;
         memtest86.enable = true;
@@ -86,12 +85,7 @@ in
     virt-manager.enable = true; # installs virtualisation client
   };
 
-  environment = {
-    systemPackages = with pkgs; [
-      git
-      btop fastfetch
-    ];
-  };
+  environment.systemPackages = with pkgs; [ git btop fastfetch ];
 
   virtualisation = {
     #docker = { # Installs docker and sets it up
