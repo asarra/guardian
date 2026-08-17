@@ -1,8 +1,6 @@
 { config, pkgs, lib, ... }:
 
 {
-  # Login setup
-  services.xserver.displayManager.startx.enable = true; # brings us straight to tty
   programs = {
     mtr.enable = true; # installs network diagnostic tool
     virt-manager.enable = true; # installs virtualisation client
@@ -10,8 +8,8 @@
 
   environment = {
     systemPackages = with pkgs; [
-      git busybox
-      btop fastfetch tree
+      git
+      btop fastfetch
     ];
   };
 
