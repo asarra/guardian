@@ -6,23 +6,12 @@
   programs = {
     mtr.enable = true; # installs network diagnostic tool
     virt-manager.enable = true; # installs virtualisation client
-
-    # Development
-    zsh = {
-      enable = true;
-      syntaxHighlighting.enable = true;
-      autosuggestions.enable = true;
-      ohMyZsh.enable = true; # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/
-      ohMyZsh.plugins = [ "git" "autojump" ];
-      ohMyZsh.theme = "robbyrussell";
-      shellAliases = {};
-    };
   };
 
   environment = {
     systemPackages = with pkgs; [
       git busybox
-      btop fastfetch tree autojump
+      btop fastfetch tree
     ];
   };
 
