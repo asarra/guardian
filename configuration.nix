@@ -63,6 +63,7 @@ in
     nameservers = [ "9.9.9.9" "1.1.1.1" ]; # dns
     firewall = {
       allowPing = true;
+      allowedTCPPorts = [ 22 ];
     };
   };
 
@@ -86,6 +87,9 @@ in
   };
 
   environment.systemPackages = with pkgs; [ git btop fastfetch ];
+
+  services.openssh.enable = true;
+  services.openssh.settings=PermitRootLogin = "yes";
 
   virtualisation = {
     #docker = { # Installs docker and sets it up
