@@ -1,31 +1,38 @@
 { pkgs, ... }:
 
 let
-  mkUserSimple = { description, exec, timeout ? 10 }: { # Helper template
+  mkSystemSimple = { description, exec, timeout ? 30 }: { # Helper template
     description = description; # Manual: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
-    wantedBy = [ "graphical-session.target" ];
-    wants    = [ "graphical-session.target" ];
-    after    = [ "graphical-session.target" ];
+    after = [ "network.target" "local-fs.target" ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      Type = "simple";
+      User = "root";
       ExecStart = exec;
-      Restart = "on-failure";
-      RestartSec = 1;
       TimeoutStopSec = timeout;
     };
   };
 in {
   systemd = {
-    services = { # Do not restart since it fucks up the current session # From https://discourse.nixos.org/t/screen-locker-crashing/33510
+    services = { # https://discourse.nixos.org/t/screen-locker-crashing/33510
       systemd-logind.restartIfChanged = false; # SDDM and lightdm screen locker crash fix
       NetworkManager.restartIfChanged = false;
-    };
 
-    user.services = {
-      #polkit-gnome-authentication-agent-1 = mkUserSimple {
-      #  description = "polkit-gnome-authentication-agent-1";
-      #  exec = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      #};
+      colt-vm = mkSystemSimple {
+        description = "Colt VM";
+        exec = ''
+          ${pkgs.qemu_kvm}/bin/qemu-system-x86_64 \
+            -enable-kvm -m 8G -smp 8 -vga none -nographic -cpu host,kvm=off \
+            -drive if=pflash,format=raw,readonly=on,file=/run/current-system/sw/share/OVMF/OVMF_CODE.fd \
+            -drive if=pflash,format=raw,snapshot=on,file=/run/current-system/sw/share/OVMF/OVMF_VARS.fd \
+            -device pcie-root-port,id=p \
+            -drive file=/var/lib/my-vms/colt-guest.qcow2,if=virtio \
+            -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
+            -device vfio-pci,host=26:00.1,bus=p
+        '';
+      };
+
+      #second-vm
+
     };
   };
 }
