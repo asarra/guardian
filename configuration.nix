@@ -115,10 +115,7 @@ in
           mkdir -p /var/lib/my-vms
           [ -f /var/lib/my-vms/colt-disk.qcow2 ] || ${pkgs.qemu_kvm}/bin/qemu-img create -f qcow2 /var/lib/my-vms/colt-disk.qcow2 50G
           if [ ! -f /var/lib/my-vms/colt-install.iso ]; then
-            URL=$(echo "https://github.com/asarra/guardian" | sed -e 's|github.com|nightly.link|' -e 's|/actions||' -e 's|$|/main/output.zip|')
-            ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/a.zip "$URL"
-            ${pkgs.unzip}/bin/unzip -p /var/lib/my-vms/a.zip coreos.iso > /var/lib/my-vms/colt-install.iso
-            rm /var/lib/my-vms/a.zip
+            ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/coreos.iso https://github.com/asarra/colt/releases/download/latest/coreos.iso
           fi
         '';
         exec = ''
