@@ -43,8 +43,8 @@ in
 
     # Kernel
     kernelPackages = pkgs.linuxPackages_hardened;
-    kernelParams = [ "quiet" ] ++ [ "zswap.enabled=1" "zswap.max_pool_percent=25" "zswap.shrinker_enabled=1" ]; # https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt
-    kernelModules = config.boot.initrd.availableKernelModules ++ config.boot.initrd.kernelModules; # keeping virtualisation and adding/loading available modules # See: https://github.com/triton/triton
+    kernelParams = [ "vfio-pci.ids=10de:1e84,10de:10f8" "amd_iommu=on" "iommu=pt" ] ++ [ "quiet" ] ++ [ "zswap.enabled=1" "zswap.max_pool_percent=25" "zswap.shrinker_enabled=1" ]; # https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt
+    kernelModules = [ "vfio_pci" "vfio" "vfio_iommu_type1" ] ++ config.boot.initrd.availableKernelModules ++ config.boot.initrd.kernelModules; # See: https://github.com/triton/triton
     kernel.sysctl = { "vm.swappiness" = 40; "vm.page-cluster" = 2; }; # swap specific kernel tunables
 
     initrd.availableKernelModules = (lib.subtractLists ["sr_mod" "rtsx_pci_sdmmc"] config.boot.initrd.availableKernelModules); # No "sr_mod" (CDs) & "rtsx_pci_sdmmc" (m. SD cards) https://ryantm.github.io/nixpkgs/functions/library/lists
@@ -60,7 +60,7 @@ in
     useDHCP = mkForce true; #  I definitely want this
     nameservers = [ "9.9.9.9" "1.1.1.1" ]; # dns
     firewall = {
-      allowPing = false;
+      allowPing = true;
     };
   };
 
