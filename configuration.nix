@@ -119,14 +119,14 @@ in
         preStart = ''
           mkdir -p /var/lib/my-vms
           [ -f /var/lib/my-vms/colt-disk.qcow2 ] || ${pkgs.qemu_kvm}/bin/qemu-img create -f qcow2 /var/lib/my-vms/colt-disk.qcow2 50G
-          [ -f /var/lib/my-vms/colt-install.iso ] || ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/coreos.iso https://github.com/asarra/colt/releases/download/latest/coreos.iso
+          [ -f /var/lib/my-vms/coreos.iso ] || ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/coreos.iso https://github.com/asarra/colt/releases/download/latest/coreos.iso
         '';
         exec = ''
           ${pkgs.qemu_kvm}/bin/qemu-system-x86_64 \
             -enable-kvm -m 8G -smp 8 -vga none -nographic -cpu host,kvm=off \
             -device pcie-root-port,id=p \
             -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
-            -drive file=/var/lib/my-vms/colt-install.iso,media=cdrom \
+            -drive file=/var/lib/my-vms/coreos.iso,media=cdrom \
             -netdev user,id=net0,hostfwd=tcp::2222-:22 -device virtio-net-pci,netdev=net0 \
             -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
             -device vfio-pci,host=26:00.1,bus=p,multifunction=on \
