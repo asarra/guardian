@@ -125,6 +125,7 @@ in
     libvirtd = {
       enable = true; # If you cannot activate the "default" internet, reboot and try it again with virsh # https://bbs.archlinux.org/viewtopic.php?id=284089
       onBoot = "start";
+      onShutdown = "shutdown";
       qemu.runAsRoot = true;
     };
   };
@@ -133,62 +134,6 @@ in
     services = { # https://discourse.nixos.org/t/screen-locker-crashing/33510
       systemd-logind.restartIfChanged = false; # SDDM and lightdm screen locker crash fix
       NetworkManager.restartIfChanged = false;
-
-      libvirt-init-network = {
-        description = "Declarative Libvirt default network builder";
-        after = [ "libvirtd.service" ];
-        requires = [ "libvirtd.service" ];
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-          ExecStart = pkgs.writeShellScript "init-libvirt-net" ''
-            # Prevent duplicate errors by silently checking existing networks
-            if ${pkgs.libvirt}/bin/virsh net-info default >/dev/null 2>&1; then
-              ${pkgs.libvirt}/bin/virsh net-destroy default || true
-              ${pkgs.libvirt}/bin/virsh net-undefine default || true
-            fi
-            
-            # Build network from the strict declarative script block
-            ${pkgs.libvirt}/bin/virsh net-define ${networkXml}
-            ${pkgs.libvirt}/bin/virsh net-start default
-            ${pkgs.libvirt}/bin/virsh net-autostart default
-          '';
-        };
-      };
-
-      colt-vm = mkSystemSimple {
-        description = "Colt VM";
-        preStart = ''
-          mkdir -p /var/lib/my-vms
-          [ -f /var/lib/my-vms/colt-disk.qcow2 ] || ${pkgs.qemu_kvm}/bin/qemu-img create -f qcow2 /var/lib/my-vms/colt-disk.qcow2 50G
-          [ -f /var/lib/my-vms/coreos.iso ] || ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/coreos.iso https://github.com/asarra/colt/releases/download/latest/coreos.iso
-
-          # TAP interface for VM IP
-          if ! ${pkgs.iproute2}/bin/ip link show colt-tap >/dev/null 2>&1; then
-            ${pkgs.iproute2}/bin/ip tuntap add dev colt-tap mode tap user asarra
-            ${pkgs.iproute2}/bin/ip link set colt-tap master virbr0
-            ${pkgs.iproute2}/bin/ip link set colt-tap up
-          fi
-        '';
-        exec = ''
-          ${pkgs.qemu_kvm}/bin/qemu-system-x86_64 \
-            -enable-kvm -m 8G -smp 8 -vga none -nographic -cpu max \
-            -device pcie-root-port,id=p \
-            -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
-            -drive file=/var/lib/my-vms/coreos.iso,media=cdrom \
-            -netdev tap,id=net0,ifname=colt-tap,script=no,downscript=no -device virtio-net-pci,netdev=net0 \
-            -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
-            -device vfio-pci,host=26:00.1,bus=p,addr=00.1 \
-            -device vfio-pci,host=26:00.2,bus=p,addr=00.2 \
-            -device vfio-pci,host=26:00.3,bus=p,addr=00.3 \
-            -serial mon:stdio \
-            -append "console=ttyS0,115200n8"
-        '';
-        postStop = ''
-          ${pkgs.iproute2}/bin/ip link delete colt-tap || true
-        '';
-        };
     };
   };
 
