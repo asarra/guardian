@@ -9,6 +9,18 @@ let
   user = { name = "asarra"; origin = "de"; time = "Europe/Berlin"; language = "en_US.UTF-8"; };
   device = { host = "guardian"; mode = "ondemand"; cores = 12; };
   inherit (lib) mkForce;
+  networkXml = pkgs.writeText "libvirt-default-net.xml" ''
+    <network>
+      <name>default</name>
+      <forward mode='nat'/>
+      <bridge name='virbr0' stp='on' delay='0'/>
+      <ip address='192.168.122.1' netmask='255.255.255.0'>
+        <dhcp>
+          <range start='192.168.122.2' end='192.168.122.254'/>
+        </dhcp>
+      </ip>
+    </network>
+  '';
   mkSystemSimple = { description, exec, preStart ? "", postStop ? "", timeout ? 30 }: { # Helper template
     description = description; # Manual: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
     after = [ "network.target" "local-fs.target" ];
@@ -126,6 +138,29 @@ in
     services = { # https://discourse.nixos.org/t/screen-locker-crashing/33510
       systemd-logind.restartIfChanged = false; # SDDM and lightdm screen locker crash fix
       NetworkManager.restartIfChanged = false;
+
+      systemd.services.libvirt-init-network = {
+        description = "Declarative Libvirt default network builder";
+        after = [ "libvirtd.service" ];
+        requires = [ "libvirtd.service" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = pkgs.writeShellScript "init-libvirt-net" ''
+            # Prevent duplicate errors by silently checking existing networks
+            if ${pkgs.libvirt}/bin/virsh net-info default >/dev/null 2>&1; then
+              ${pkgs.libvirt}/bin/virsh net-destroy default || true
+              ${pkgs.libvirt}/bin/virsh net-undefine default || true
+            fi
+            
+            # Build network from the strict declarative script block
+            ${pkgs.libvirt}/bin/virsh net-define ${networkXml}
+            ${pkgs.libvirt}/bin/virsh net-start default
+            ${pkgs.libvirt}/bin/virsh net-autostart default
+          '';
+        };
+      };
 
       colt-vm = mkSystemSimple {
         description = "Colt VM";
