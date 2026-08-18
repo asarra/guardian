@@ -139,7 +139,7 @@ in
       systemd-logind.restartIfChanged = false; # SDDM and lightdm screen locker crash fix
       NetworkManager.restartIfChanged = false;
 
-      systemd.services.libvirt-init-network = {
+      libvirt-init-network = {
         description = "Declarative Libvirt default network builder";
         after = [ "libvirtd.service" ];
         requires = [ "libvirtd.service" ];
