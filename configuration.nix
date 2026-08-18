@@ -110,7 +110,16 @@ in
     #  rootless.daemon.settings.data-root = "~/.local/share/docker"; # https://discourse.nixos.org/t/rootless-docker-systemd-resolved-and-dns-inside-containers/47030/4
     #};
 
-    libvirtd.enable = true; # If you cannot activate the "default" internet, reboot and try it again with virsh # https://bbs.archlinux.org/viewtopic.php?id=284089
+    libvirtd = {
+      enable = true; # If you cannot activate the "default" internet, reboot and try it again with virsh # https://bbs.archlinux.org/viewtopic.php?id=284089
+      onBoot = "start";
+      qemu = {
+        runAsRoot = true;
+        swtpm.enable = true; # TPM emulation support
+        ovmf.enable = true;  # UEFI support
+        ovmf.packages = [ pkgs.OVMFFull.fd ];
+      };
+    };
   };
 
   systemd = {
@@ -134,7 +143,7 @@ in
         '';
         exec = ''
           ${pkgs.qemu_kvm}/bin/qemu-system-x86_64 \
-            -enable-kvm -m 8G -smp 8 -vga none -nographic -cpu host,kvm=off \
+            -enable-kvm -m 8G -smp 8 -vga none -nographic -cpu max \
             -device pcie-root-port,id=p \
             -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
             -drive file=/var/lib/my-vms/coreos.iso,media=cdrom \
