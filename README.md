@@ -3,4 +3,4 @@ Install steps for the NixOs through this configuration on the server:
 - sudo bash ./install.sh
 
 On the client:
-- ssh asarra@<IP>
+- ssh asarra@IP
