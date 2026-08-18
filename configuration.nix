@@ -46,7 +46,7 @@ in
 
     # Kernel
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [ "vfio-pci.ids=10de:1e84,10de:10f8" "amd_iommu=on" "iommu=pt" ] ++ [ "quiet" ] ++ [ "zswap.enabled=1" "zswap.max_pool_percent=25" "zswap.shrinker_enabled=1" ]; # https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt # https://ryantm.github.io/nixpkgs/functions/library/lists
+    kernelParams = [ "vfio-pci.ids=10de:1e84,10de:10f8,10de:1ad8,10de:1ad9" "amd_iommu=on" "iommu=pt" ] ++ [ "quiet" ] ++ [ "zswap.enabled=1" "zswap.max_pool_percent=25" "zswap.shrinker_enabled=1" ]; # https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt # https://ryantm.github.io/nixpkgs/functions/library/lists
     kernelModules = [ "vfio_pci" "vfio" "vfio_iommu_type1" ] ++ config.boot.initrd.availableKernelModules ++ config.boot.initrd.kernelModules; # See: https://github.com/triton/triton
     kernel.sysctl = { "vm.swappiness" = 40; "vm.page-cluster" = 2; }; # swap specific kernel tunables
     blacklistedKernelModules = [ "nvidia" "nouveau" "nvidia_drm" "nvidia_modeset" "ucsi_ccg" ];
@@ -127,7 +127,9 @@ in
             -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
             -drive file=/var/lib/my-vms/colt-install.iso,media=cdrom \
             -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
-            -device vfio-pci,host=26:00.1,bus=p
+            -device vfio-pci,host=26:00.1,bus=p \
+            -device vfio-pci,host=26:00.2,bus=p \
+            -device vfio-pci,host=26:00.3,bus=p
         '';
         };
     };
