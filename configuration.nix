@@ -120,6 +120,13 @@ in
           mkdir -p /var/lib/my-vms
           [ -f /var/lib/my-vms/colt-disk.qcow2 ] || ${pkgs.qemu_kvm}/bin/qemu-img create -f qcow2 /var/lib/my-vms/colt-disk.qcow2 50G
           [ -f /var/lib/my-vms/coreos.iso ] || ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/coreos.iso https://github.com/asarra/colt/releases/download/latest/coreos.iso
+
+          # TAP-Interface for the vm IP
+          if ! ${pkgs.iproute2}/bin/ip link show colt-tap >/dev/null 2>&1; then
+            ${pkgs.iproute2}/bin/ip tuntap add dev colt-tap mode tap user asarra
+            ${pkgs.iproute2}/bin/ip link set colt-tap master virbr0
+            ${pkgs.iproute2}/bin/ip link set colt-tap up
+          fi
         '';
         exec = ''
           ${pkgs.qemu_kvm}/bin/qemu-system-x86_64 \
@@ -127,7 +134,7 @@ in
             -device pcie-root-port,id=p \
             -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
             -drive file=/var/lib/my-vms/coreos.iso,media=cdrom \
-            -netdev user,id=net0,hostfwd=tcp::2222-:22 -device virtio-net-pci,netdev=net0 \
+            -netdev tap,id=net0,ifname=colt-tap,script=no,downscript=no -device virtio-net-pci,netdev=net0 \
             -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
             -device vfio-pci,host=26:00.1,bus=p,addr=00.1 \
             -device vfio-pci,host=26:00.2,bus=p,addr=00.2 \
