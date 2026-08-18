@@ -139,6 +139,8 @@ in
             -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
             -drive file=/var/lib/my-vms/coreos.iso,media=cdrom \
             -netdev tap,id=net0,ifname=colt-tap,script=no,downscript=no -device virtio-net-pci,netdev=net0 \
+            -serial mon:stdio \
+            -append "console=ttyS0,115200n8"
         '';
         postStop = ''
           ${pkgs.iproute2}/bin/ip link delete colt-tap || true
