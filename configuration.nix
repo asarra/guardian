@@ -60,7 +60,6 @@ in
   networking = {
     hostName = device.host;
     networkmanager.enable = true; # Console: nmcli and nmtui
-    bridges."br0".interfaces = [ "wlo1" ]; # for the vm network
     useDHCP = mkForce true;
     nameservers = [ "9.9.9.9" "1.1.1.1" ]; # dns
     firewall.allowPing = true;
@@ -127,7 +126,7 @@ in
             -device pcie-root-port,id=p \
             -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
             -drive file=/var/lib/my-vms/colt-install.iso,media=cdrom \
-            -netdev bridge,br=br0,id=net0 -device virtio-net-pci,netdev=net0
+            -netdev user,id=net0,hostfwd=tcp::2222-:22 -device virtio-net-pci,netdev=net0 \
             -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
             -device vfio-pci,host=26:00.1,bus=p,multifunction=on \
             -device vfio-pci,host=26:00.2,bus=p,multifunction=on \
