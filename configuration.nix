@@ -9,18 +9,6 @@ let
   user = { name = "asarra"; origin = "de"; time = "Europe/Berlin"; language = "en_US.UTF-8"; };
   device = { host = "guardian"; mode = "ondemand"; cores = 12; };
   inherit (lib) mkForce;
-  networkXml = pkgs.writeText "libvirt-default-net.xml" ''
-    <network>
-      <name>default</name>
-      <forward mode='nat'/>
-      <bridge name='virbr0' stp='on' delay='0'/>
-      <ip address='192.168.122.1' netmask='255.255.255.0'>
-        <dhcp>
-          <range start='192.168.122.2' end='192.168.122.254'/>
-        </dhcp>
-      </ip>
-    </network>
-  '';
   mkSystemSimple = { description, exec, preStart ? "", postStop ? "", timeout ? 30 }: { # Helper template
     description = description; # Manual: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
     after = [ "network.target" "local-fs.target" ];
