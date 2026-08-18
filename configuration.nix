@@ -63,6 +63,7 @@ in
     useDHCP = mkForce true;
     nameservers = [ "9.9.9.9" "1.1.1.1" ]; # dns
     firewall.allowPing = true;
+    firewall.allowedTCPPorts = [ 2222 ];
   };
 
   # Time zone, internationalisation and console mapping
