@@ -1,6 +1,4 @@
-Install steps for the NixOs through this configuration on the server:
+Install steps for the NixOs through this configuration:
 - Make sure that this folder is inside of /etc/nixos
 - sudo bash ./install.sh
-
-
-On the client: ssh asarra@IP
+- on the client: ssh asarra@IP
