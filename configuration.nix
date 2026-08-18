@@ -139,6 +139,10 @@ in
             -drive file=/var/lib/my-vms/colt-disk.qcow2,if=virtio \
             -drive file=/var/lib/my-vms/coreos.iso,media=cdrom \
             -netdev tap,id=net0,ifname=colt-tap,script=no,downscript=no -device virtio-net-pci,netdev=net0 \
+            -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
+            -device vfio-pci,host=26:00.1,bus=p,addr=00.1 \
+            -device vfio-pci,host=26:00.2,bus=p,addr=00.2 \
+            -device vfio-pci,host=26:00.3,bus=p,addr=00.3 \
             -serial mon:stdio \
             -append "console=ttyS0,115200n8"
         '';
