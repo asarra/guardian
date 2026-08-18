@@ -6,4 +6,4 @@ Install steps for the NixOs through this configuration:
 
 On the client:
 - ssh asarra@IP
-- journalctl -u colt-vm.service -e
+- systemctl status colt-vm.service
