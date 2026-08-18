@@ -9,7 +9,7 @@ let
   user = { name = "asarra"; origin = "de"; time = "Europe/Berlin"; language = "en_US.UTF-8"; };
   device = { host = "guardian"; mode = "ondemand"; cores = 12; };
   inherit (lib) mkForce;
-  mkSystemSimple = { description, exec, preStart ? "", timeout ? 30 }: { # Helper template
+  mkSystemSimple = { description, exec, preStart ? "", postStop ? "", timeout ? 30 }: { # Helper template
     description = description; # Manual: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
     after = [ "network.target" "local-fs.target" ];
     wantedBy = [ "multi-user.target" ];
@@ -19,6 +19,7 @@ let
       ExecStart = exec;
       TimeoutStopSec = timeout;
     };
+    postStop = postStop;
   };
 in
 {
@@ -62,8 +63,11 @@ in
     networkmanager.enable = true; # Console: nmcli and nmtui
     useDHCP = mkForce true;
     nameservers = [ "9.9.9.9" "1.1.1.1" ]; # dns
-    firewall.allowPing = true;
-    firewall.allowedTCPPorts = [ 2222 ];
+    firewall = {
+      allowPing = true;
+      allowedTCPPorts = [ 2222 ];
+      trustedInterfaces = [ "virbr0" ];
+    };
   };
 
   # Time zone, internationalisation and console mapping
@@ -121,7 +125,7 @@ in
           [ -f /var/lib/my-vms/colt-disk.qcow2 ] || ${pkgs.qemu_kvm}/bin/qemu-img create -f qcow2 /var/lib/my-vms/colt-disk.qcow2 50G
           [ -f /var/lib/my-vms/coreos.iso ] || ${pkgs.curl}/bin/curl -L -o /var/lib/my-vms/coreos.iso https://github.com/asarra/colt/releases/download/latest/coreos.iso
 
-          # TAP-Interface for the vm IP
+          # TAP interface for VM IP
           if ! ${pkgs.iproute2}/bin/ip link show colt-tap >/dev/null 2>&1; then
             ${pkgs.iproute2}/bin/ip tuntap add dev colt-tap mode tap user asarra
             ${pkgs.iproute2}/bin/ip link set colt-tap master virbr0
@@ -139,6 +143,9 @@ in
             -device vfio-pci,host=26:00.1,bus=p,addr=00.1 \
             -device vfio-pci,host=26:00.2,bus=p,addr=00.2 \
             -device vfio-pci,host=26:00.3,bus=p,addr=00.3
+        '';
+        postStop = ''
+          ${pkgs.iproute2}/bin/ip link delete colt-tap || true
         '';
         };
     };
