@@ -50,6 +50,7 @@ in
     kernelModules = [ "vfio_pci" "vfio" "vfio_iommu_type1" ] ++ config.boot.initrd.availableKernelModules ++ config.boot.initrd.kernelModules; # See: https://github.com/triton/triton
     kernel.sysctl = { "vm.swappiness" = 40; "vm.page-cluster" = 2; }; # swap specific kernel tunables
     blacklistedKernelModules = [ "nvidia" "nouveau" "nvidia_drm" "nvidia_modeset" "ucsi_ccg" ];
+    initrd.kernelModules = [ "vfio_pci" "vfio_iommu_type1" "vfio" ];
     initrd.verbose = false;
   };
 
