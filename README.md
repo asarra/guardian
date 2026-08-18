@@ -5,5 +5,7 @@ Install steps for the NixOs through this configuration:
 - sudo bash ./install.sh
 
 On the client:
-- ssh asarra@IP
+- ssh asarra@NixOSIP
 - systemctl status colt-vm.service
+- exit
+- ssh -vvv -J asarra@NixOSIP:2222 -i .ssh/colt core@localhost
