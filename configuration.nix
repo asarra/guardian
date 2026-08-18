@@ -129,9 +129,9 @@ in
             -drive file=/var/lib/my-vms/coreos.iso,media=cdrom \
             -netdev user,id=net0,hostfwd=tcp::2222-:22 -device virtio-net-pci,netdev=net0 \
             -device vfio-pci,host=26:00.0,bus=p,multifunction=on \
-            -device vfio-pci,host=26:00.1,bus=p,multifunction=on \
-            -device vfio-pci,host=26:00.2,bus=p,multifunction=on \
-            -device vfio-pci,host=26:00.3,bus=p,multifunction=on
+            -device vfio-pci,host=26:00.1,bus=p,addr=00.1 \
+            -device vfio-pci,host=26:00.2,bus=p,addr=00.2 \
+            -device vfio-pci,host=26:00.3,bus=p,addr=00.3
         '';
         };
     };
