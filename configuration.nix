@@ -125,12 +125,7 @@ in
     libvirtd = {
       enable = true; # If you cannot activate the "default" internet, reboot and try it again with virsh # https://bbs.archlinux.org/viewtopic.php?id=284089
       onBoot = "start";
-      qemu = {
-        runAsRoot = true;
-        swtpm.enable = true; # TPM emulation support
-        ovmf.enable = true;  # UEFI support
-        ovmf.packages = [ pkgs.OVMFFull.fd ];
-      };
+      qemu.runAsRoot = true;
     };
   };
 
