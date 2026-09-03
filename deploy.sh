@@ -17,7 +17,7 @@ sudo virsh net-autostart default
 
 # 3. Clean up the old instance if it exists
 sudo virsh destroy colt-vm 2>/dev/null || true
-sudo virsh undefine colt-vm 2>/dev/null || true
+sudo virsh undefine colt-vm --nvram 2 2>/dev/null || true
 
 # 4. Pure libvirt VM generation via standard flags
 sudo virt-install \
