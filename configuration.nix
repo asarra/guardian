@@ -129,8 +129,6 @@ in
 
       deploy-colt-vm = mkSystemSimple {
         description = "Automatic deployment of colt-vm via deploy.sh";
-        after = [ "libvirtd.service" "network-online.target" ];
-        requires = [ "libvirtd.service" ];
         exec = "${pkgs.bash}/bin/bash /etc/nixos/deploy.sh";
         timeout = 300; 
       };
