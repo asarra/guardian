@@ -17,7 +17,6 @@ On the client:
 Host jumphost
     HostName NixOSIP
     User asarra
-    IdentityFile ~/.ssh/id_ed25519
 
 Host coreos
     HostName localhost
