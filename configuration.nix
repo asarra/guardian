@@ -124,11 +124,12 @@ in
       systemd-logind.restartIfChanged = false; # SDDM and lightdm screen locker crash fix
       NetworkManager.restartIfChanged = false;
 
-    deploy-colt-vm = mkSystemSimple {
-      after = [ "libvirtd.service" "network-online.target" ];
-      requires = [ "libvirtd.service" ];
-      preStart = "${pkgs.coreutils}/bin/chmod +x /etc/nixos/deploy.sh";
-      exec = "/etc/nixos/deploy.sh";
+      deploy-colt-vm = mkSystemSimple {
+        after = [ "libvirtd.service" "network-online.target" ];
+        requires = [ "libvirtd.service" ];
+        preStart = "${pkgs.coreutils}/bin/chmod +x /etc/nixos/deploy.sh";
+        exec = "/etc/nixos/deploy.sh";
+      };
     };
   };
 
