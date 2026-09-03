@@ -16,7 +16,7 @@ Host jumphost
     User asarra
 
 Host coreos
-    HostName localhost
+    HostName CoreOSIP
     User core
     ProxyJump jumphost
     IdentityFile ~/.ssh/colt
