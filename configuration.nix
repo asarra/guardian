@@ -12,6 +12,7 @@ let
   mkSystemSimple = { description, exec, preStart ? "", postStop ? "", timeout ? 30 }: { # Helper template
     description = description; # Manual: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
     after = [ "libvirtd.service" "network-online.target" ];
+    wants = [ "network-online.target" ];
     requires = [ "libvirtd.service" ];
     wantedBy = [ "multi-user.target" ];
     preStart = preStart;
