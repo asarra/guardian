@@ -11,3 +11,18 @@ On the client:
 - systemctl status colt-vm.service
 - exit
 - ssh -vvv -J asarra@NixOSIP:2222 -i .ssh/colt core@localhost
+
+- nano ~/.ssh/config
+```
+Host jumphost
+    HostName 192.168.1.2
+    User asarra
+    IdentityFile ~/.ssh/id_ed25519
+
+Host coreos
+    HostName localhost
+    User core
+    ProxyJump jumphost
+    IdentityFile ~/.ssh/colt
+```
+- ssh coreos
