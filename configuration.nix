@@ -125,6 +125,7 @@ in
       NetworkManager.restartIfChanged = false;
 
       deploy-colt-vm = mkSystemSimple {
+        description = "Automatic deployment of colt-vm via deploy.sh";
         after = [ "libvirtd.service" "network-online.target" ];
         requires = [ "libvirtd.service" ];
         preStart = "${pkgs.coreutils}/bin/chmod +x /etc/nixos/deploy.sh";
