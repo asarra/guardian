@@ -10,8 +10,6 @@ On the client:
 - ssh asarra@NixOSIP
 - systemctl status colt-vm.service
 - exit
-- ssh -vvv -J asarra@NixOSIP:2222 -i .ssh/colt core@localhost
-
 - nano ~/.ssh/config
 ```
 Host jumphost
