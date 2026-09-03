@@ -68,6 +68,7 @@ in
       allowedTCPPorts = [ 2222 ];
       trustedInterfaces = [ "virbr0" ];
     };
+    nftables.enable = true; # necessary for the VM network
   };
 
   # Time zone, internationalisation and console mapping
