@@ -36,7 +36,7 @@ sudo virt-install \
   --host-device pci_0000_26_00_3 \
   --graphics vnc,listen=127.0.0.1 \
   --console pty,target_type=serial \
-  --boot cdrom,hd,menu=on \
+  --boot hd,cdrom,menu=on \
   --autostart \
   --noautoconsole \
   --wait 0
