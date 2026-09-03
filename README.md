@@ -9,7 +9,6 @@ Install steps for the fresh minimal NixOs through this configuration:
 On the client:
 - ssh asarra@NixOSIP
 - virsh -c qemu:///system domifaddr colt-vm && exit
-- # for troubleshooting with VNC: ssh -L 5900:127.0.0.1:5900 asarra@NixOSIP && localhost:5900
 - nano ~/.ssh/config
 ```
 Host jumphost
@@ -23,3 +22,11 @@ Host coreos
     IdentityFile ~/.ssh/colt
 ```
 - ssh coreos
+
+For troubleshooting:
+- ssh -L 5900:127.0.0.1:5900 asarra@NixOSIP
+- VNC: localhost:5900
+- sudo virsh domblklist colt-vm
+- sudo virsh detach-disk colt-vm sda --persistent
+- sudo virsh destroy colt-vm
+- sudo virsh start colt-vm
