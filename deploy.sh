@@ -27,8 +27,8 @@ sudo virt-install \
   --cpu host-passthrough \
   --os-variant fedora-coreos-stable \
   --boot firmware=efi
-  --disk path=/var/lib/my-vms/colt-disk.qcow2,bus=virtio,boot_order=1 \
-  --cdrom /var/lib/my-vms/coreos.iso,boot_order=2 \
+  --disk path=/var/lib/my-vms/colt-disk.qcow2,bus=virtio \
+  --cdrom /var/lib/my-vms/coreos.iso \
   --network network=default,model=virtio \
   --host-device pci_0000_26_00_0 \
   --host-device pci_0000_26_00_1 \
