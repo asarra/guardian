@@ -11,13 +11,16 @@ let
   inherit (lib) mkForce;
   mkSystemSimple = { description, exec, preStart ? "", postStop ? "", timeout ? 30 }: { # Helper template
     description = description; # Manual: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
-    after = [ "network.target" "local-fs.target" ];
+    after = [ "libvirtd.service" "network-online.target" ];
+    requires = [ "libvirtd.service" ];
     wantedBy = [ "multi-user.target" ];
     preStart = preStart;
+    path = with pkgs; [ libvirt virt-manager qemu_kvm curl bash coreutils ];
     serviceConfig = {
       User = "root";
       ExecStart = exec;
       TimeoutStopSec = timeout;
+      Type = "oneshot";
     };
     postStop = postStop;
   };
@@ -131,10 +134,6 @@ in
         exec = "${pkgs.bash}/bin/bash /etc/nixos/deploy.sh";
         timeout = 300; 
       };
-      deploy-colt-vm.after = [ "libvirtd.service" "network-online.target" ];
-      deploy-colt-vm.requires = [ "libvirtd.service" ];
-      deploy-colt-vm.serviceConfig.Type = lib.mkForce "oneshot";
-      deploy-colt-vm.path = with pkgs; [ libvirt virt-manager qemu_kvm curl bash coreutils ];
     };
   };
 
