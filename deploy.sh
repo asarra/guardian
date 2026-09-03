@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# 0. Check if this is the 1st boot
+[ ! -f /var/lib/colt-vm-booted ] && touch /var/lib/colt-vm-booted && exit 0
+
 # 1. Provision storage directory
 mkdir -p /var/lib/my-vms
 [ -f /var/lib/my-vms/colt-disk.qcow2 ] || qemu-img create -f qcow2 /var/lib/my-vms/colt-disk.qcow2 50G
