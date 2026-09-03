@@ -23,3 +23,6 @@ Host coreos
     IdentityFile ~/.ssh/colt
 ```
 - ssh coreos
+- sudo systemctl enable tailscaled.service
+- sudo tailscale up
+- sudo systemctl start tailscale-serve.service
