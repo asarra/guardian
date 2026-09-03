@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 0. Check if this is the 1st boot
+# 0. Check if this is the 1st boot to avoid missing packages
 [ ! -f /var/lib/colt-vm-booted ] && touch /var/lib/colt-vm-booted && exit 0
 
 # 1. Provision storage directory
