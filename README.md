@@ -8,8 +8,7 @@ Install steps for the fresh minimal NixOs through this configuration:
 
 On the client:
 - ssh asarra@NixOSIP
-- systemctl status colt-vm.service
-- exit
+- virsh -c qemu:///system domifaddr colt-vm && exit
 - nano ~/.ssh/config
 ```
 Host jumphost
