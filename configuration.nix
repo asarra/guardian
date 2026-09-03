@@ -128,9 +128,13 @@ in
         description = "Automatic deployment of colt-vm via deploy.sh";
         after = [ "libvirtd.service" "network-online.target" ];
         requires = [ "libvirtd.service" ];
-        preStart = "${pkgs.coreutils}/bin/chmod +x /etc/nixos/deploy.sh";
-        exec = "/etc/nixos/deploy.sh";
+        exec = "${pkgs.bash}/bin/bash /etc/nixos/deploy.sh";
+        timeout = 300; 
       };
+      deploy-colt-vm.after = [ "libvirtd.service" "network-online.target" ];
+      deploy-colt-vm.requires = [ "libvirtd.service" ];
+      deploy-colt-vm.serviceConfig.Type = lib.mkForce "oneshot";
+      deploy-colt-vm.path = with pkgs; [ libvirt virt-manager qemu_kvm curl bash coreutils ];
     };
   };
 
