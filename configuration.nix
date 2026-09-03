@@ -22,6 +22,7 @@ let
       ExecStart = exec;
       TimeoutStopSec = timeout;
       Type = "oneshot";
+      RemainAfterExit = true;
     };
     postStop = postStop;
   };
