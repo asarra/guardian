@@ -11,7 +11,7 @@ virsh net-destroy default 2>/dev/null || true
 virsh net-undefine default 2>/dev/null || true
 
 # Recreate standard NAT network dynamically without using file pointers
-echo "<network><name>default</name><forward mode='nat'/><bridge name='virbr0' stp='on' delay='0'/><ip address='192.168.122.1' netmask='255.255.255.0'><dhcp><range start='192.168.122.2' end='192.168.122.254'/></dhcp></ip></network>" | sudo virsh net-define /dev/stdin
+echo "<network><name>default</name><forward mode='nat'/><bridge name='virbr0' stp='on' delay='0'/><ip address='192.168.122.1' netmask='255.255.255.0'><dhcp><range start='192.168.122.2' end='192.168.122.254'/></dhcp></ip></network>" | virsh net-define /dev/stdin
 virsh net-start default
 virsh net-autostart default
 
