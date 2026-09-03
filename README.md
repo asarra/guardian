@@ -23,7 +23,7 @@ Host coreos
 ```
 - ssh coreos
 
-For troubleshooting visually to see the VM terminal:
+For troubleshooting visually to see the VM:
 - ssh -L 5900:127.0.0.1:5900 asarra@NixOSIP
 - VNC: localhost:5900
 
