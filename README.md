@@ -15,7 +15,7 @@ On the client:
 - nano ~/.ssh/config
 ```
 Host jumphost
-    HostName 192.168.1.2
+    HostName NixOSIP
     User asarra
     IdentityFile ~/.ssh/id_ed25519
 
