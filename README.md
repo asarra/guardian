@@ -1,4 +1,4 @@
-Install steps for the fresh minimal NixOs through this configuration:
+Install steps for the fresh minimal NixOs through this configuration (physical access):
 - nmtui
 - ping google.de
 - cd /etc/nixos && sudo git clone https://github.com/asarra/guardian
