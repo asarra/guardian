@@ -39,7 +39,6 @@ sudo virt-install \
   --boot cdrom,hd,menu=on \
   --autostart \
   --noautoconsole \
-  --import \
   --wait 0
 
 echo "Deployment finished. VM is running and registered to libvirt system lifecycle triggers."
