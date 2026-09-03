@@ -27,6 +27,6 @@ For troubleshooting:
 - ssh -L 5900:127.0.0.1:5900 asarra@NixOSIP
 - VNC: localhost:5900
 - sudo virsh domblklist colt-vm
-- sudo virsh detach-disk colt-vm sda --persistent
 - sudo virsh destroy colt-vm
+- sudo virsh detach-disk colt-vm sda --persistent
 - sudo virsh start colt-vm
