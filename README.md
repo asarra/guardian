@@ -1,4 +1,5 @@
 Install steps for the fresh minimal NixOs through this configuration (physical access):
+-
 - nmtui
 - ping google.de
 - cd /etc/nixos && sudo git clone https://github.com/asarra/guardian
@@ -7,6 +8,7 @@ Install steps for the fresh minimal NixOs through this configuration (physical a
 - sudo bash ./install.sh
 
 On the client:
+-
 - ssh asarra@NixOSIP
 - virsh -c qemu:///system domifaddr colt-vm
 - journalctl -u deploy-colt-vm.service
@@ -31,5 +33,6 @@ Host coreos
 With a tailscale connected client you can now connect to the docker services.
 
 Note:
+-
 More VMs and native containers can be added to the hypervisor host machine.
 Currently we only run a guest vm which is Fedora CoreOs that transitions into uCore.
