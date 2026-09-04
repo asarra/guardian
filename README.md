@@ -39,5 +39,5 @@ Currently we only run a guest vm which is Fedora CoreOs that transitions into uC
 
 Why?
 -
-I tried out Proxmox and other hypervisors before. I noticed that I want something that is declarative, has native Wi-Fi support, is lightweight and gives me total control. That is why I decided to combine tech that I already know and handle my requirements the best. NixOs (declarative, native Wi-Fi support, and gives total control of the system through one config file) + KVM/Qemu/libvirt (kernel native and lightweight) as the combined hypervisor.
+I tried out Proxmox and other hypervisors before. I noticed that I want something that is declarative, has native Wi-Fi support, is lightweight, secure and gives me total control. That is why I decided to combine tech that I already know and handle my requirements the best. NixOs (declarative, native Wi-Fi support, and gives total control of the system through one config file) + KVM/Qemu/libvirt (kernel native and lightweight) as the combined hypervisor.
 And as the guest OS I picked uCore (Fedora CoreOS) because it is designed to be a cattle. Set and forget. Instantly replaceable with a new guest instance. It is also declarative and handles docker/podman containers very well and in a very secure way. I am passing through my GPU to the AI application (docker container) inside of it.
