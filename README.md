@@ -1,4 +1,4 @@
-Install steps for the fresh minimal NixOs through this configuration (physical access):
+Setup steps after a fresh, minimal, bare metal NixOs install on the local machine (physical access):
 -
 - nmtui
 - ping google.de
