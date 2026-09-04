@@ -26,6 +26,6 @@ Host coreos
 - sudo systemctl enable tailscaled.service
 - sudo tailscale up
 - sudo systemctl start tailscale-serve.service
-
-With a tailscale connected client you can now connect to the docker services:
 - tailscale serve status
+
+With a tailscale connected client you can now connect to the docker services.
