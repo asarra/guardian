@@ -29,3 +29,7 @@ Host coreos
 - tailscale serve status
 
 With a tailscale connected client you can now connect to the docker services.
+
+Note:
+More VMs and native containers can be added to the hypervisor host machine.
+Currently we only run a guest vm which is Fedora CoreOs that transitions into uCore.
