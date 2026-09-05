@@ -7,30 +7,8 @@ Setup steps after a fresh, minimal, bare metal NixOs install on the local machin
 - cd .. && sudo rm -rf guardian
 - sudo bash ./install.sh
 
-On the client:
--
-- ssh asarra@NixOSIP
-- virsh -c qemu:///system domifaddr colt-vm
-- journalctl -u deploy-colt-vm.service
-- exit && nano ~/.ssh/config
-```
-Host jumphost
-    HostName NixOSIP
-    User asarra
-
-Host coreos
-    HostName CoreOSIP
-    User core
-    ProxyJump jumphost
-    IdentityFile ~/.ssh/colt
-```
-- ssh coreos
-- sudo systemctl enable tailscaled.service
-- sudo tailscale up
-- sudo systemctl start tailscale-serve.service
-- tailscale serve status
-
-With a tailscale connected client you can now connect to the docker services.
+On your own machine, you then run the ansible playbook. You need your tailscale authkey and inventory.ini files.
+With a tailscale connected client you can then connect to the docker services.
 
 Note:
 -
