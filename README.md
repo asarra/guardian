@@ -7,7 +7,8 @@ Setup steps after a fresh, minimal, bare metal NixOs install on the local machin
 - cd .. && sudo rm -rf guardian
 - sudo bash ./install.sh
 
-On your own machine, you then run the ansible playbook. You need your tailscale authkey, inventory.ini and colt's private key files.
+On your own machine, you then run: ansible-playbook private_tailscale_deployment.yaml -i inventory.ini.
+You need your tailscale authkey, inventory.ini and colt's private key files.
 With a tailscale connected client you can then connect to the docker services.
 
 Note:
