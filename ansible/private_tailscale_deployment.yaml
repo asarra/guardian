@@ -1,6 +1,7 @@
 - name: Find IP and check health of VM from hypervisor
   hosts: hypervisor
   become: false
+  gather_facts: false
   tasks:
     - name: Check if deployment was successful
       shell: journalctl -u deploy-colt-vm.service | awk '/Finished/ && /colt/ && /deployment/'
@@ -27,6 +28,7 @@
 - name: Sets up the colt vm
   hosts: colt_vm
   become: false
+  gather_facts: false
   tasks:
     - name: Waiting for connection
       wait_for_connection:
