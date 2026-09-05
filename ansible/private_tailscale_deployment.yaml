@@ -4,7 +4,7 @@
   gather_facts: false
   tasks:
     - name: Check if deployment was successful
-      shell: journalctl -u deploy-colt-vm.service | awk '/Finished/ && /colt/ && /deployment/'
+      raw: sh -c "journalctl -u deploy-colt-vm.service | awk '/Finished/ && /colt/ && /deployment/'"
       register: deployment_check
       failed_when: false
 
@@ -14,7 +14,7 @@
       when: deployment_check.stdout == ""
 
     - name: Get VM IPv4
-      shell: virsh -c qemu:///system domifaddr colt-vm | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -n 1
+      raw: sh -c "virsh -c qemu:///system domifaddr colt-vm | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -n 1"
       register: colt_vm_ip
 
     - name: Adding the colt vm with ProxyJump settings as an ansible host
@@ -23,7 +23,12 @@
         ansible_host: "{{ colt_vm_ip.stdout.strip() }}"
         ansible_user: core
         ansible_ssh_private_key_file: "~/.ssh/colt"
-        ansible_ssh_common_args: "-o ProxyJump=asarra@{{ inventory_hostname }}"
+        ansible_ssh_common_args: >-
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand="sshpass -p '{{ hostvars[inventory_hostname]['ansible_password'] | default(hostvars[inventory_hostname]['ansible_ssh_pass']) }}'
+          ssh -W %h:%p -l asarra {{ inventory_hostname }}"
+
 
 - name: Sets up the colt vm
   hosts: colt_vm
@@ -35,15 +40,22 @@
         delay: 10
         timeout: 300
 
-    - name: Enabling and logging into tailscale
-      shell: |
-        systemctl enable tailscaled.service
-        tailscale up --authkey "{{ lookup('file', './tskey-auth') | trim }}"
+    - name: Enabling tailscale
+      command: systemctl enable tailscaled.service
+      become: true
+
+    - name: Logging into tailscale
+      command: tailscale up --authkey "{{ lookup('file', './tskey-auth') }}"
       become: true
 
     - name: Starting tailscale Serve
       command: systemctl start tailscale-serve.service
       become: true
 
-    - name: See tailscale serve endpoints
+    - name: Save tailscale serve endpoints
       command: tailscale serve status
+      register: tailscale_serve_output
+
+    - name: Display Tailscale Serve Endpoints
+      debug:
+        var: tailscale_serve_output.stdout_lines
