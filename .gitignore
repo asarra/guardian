@@ -1,1 +1,3 @@
 hardware-configuration.nix
+ansible/inventory.ini
+ansible/tskey-auth
