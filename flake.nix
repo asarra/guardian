@@ -8,7 +8,7 @@
     disko.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs }: {
+  outputs = { self, nixpkgs, disko }: {
     nixosConfigurations.installerISO = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -20,7 +20,10 @@
             networks."${builtins.getEnv "WLAN_SSID"}".password = builtins.getEnv "WLAN_PASS";
           };
 
-          services.openssh.enable = true;
+          services.openssh = {
+            enable = true;
+            settings.PasswordAuthentication = true;
+          };
 
           users.users.guardian.password = builtins.getEnv "SSH_PASS";
 
