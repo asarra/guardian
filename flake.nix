@@ -28,8 +28,9 @@
 
           users.groups.guardian = {};
           users.users.asarra = {
-            isSystemUser = true;
+            isNormalUser = true;
             group = "guardian";
+            extraGroups = [ "wheel" ];
             password = builtins.getEnv "SSH_PASS";
           };
 
