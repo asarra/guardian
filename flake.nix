@@ -26,8 +26,9 @@
             settings.PasswordAuthentication = true;
           };
 
-          users.users.guardian.password = builtins.getEnv "SSH_PASS";
-          users.users.guardian.isSystemUser = true;
+          users.users.asarra.password = builtins.getEnv "SSH_PASS";
+          users.users.asarra.isSystemUser = true;
+          users.users.asarra.group = "guardian";
 
           environment.systemPackages = [
             (pkgs.writeScriptBin "bootstrap" ''
