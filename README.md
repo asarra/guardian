@@ -6,6 +6,7 @@ Setup steps to install the NixOs hypervisor (local machine):
 - sudo dd if=/var/home/nix/Downloads/guardian-installer.iso of=/dev/sdb bs=4M status=progress oflag=sync (run "lsblk", if you do want to be sure)
 - Plug the USB stick into your local server machine and boot it
 - And finally run this on your client machine: cd ~/ansible && ansible-playbook private_tailscale_deployment.yaml -i inventory.ini
+- Optionally clean the redundant files: cd ~/Downloads && sudo rm artifact.zip guardian-installer.iso guardian-secure-installer.7z
 
 You need your tailscale authkey, inventory.ini and colt's private key files.
 With a tailscale connected client you can then connect to the docker services.
