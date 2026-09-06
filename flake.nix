@@ -15,6 +15,8 @@
         "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
         ({ pkgs, ... }: {
+          nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
           networking.networkmanager.enable = pkgs.lib.mkForce false;
           networking.wireless = {
             enable = true;
