@@ -15,7 +15,7 @@
         "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
         ({ pkgs, ... }: {
-          networking.networkmanager.enable = false;
+          networking.networkmanager.enable = pkgs.lib.mkForce false;
           networking.wireless = {
             enable = true;
             networks."${builtins.getEnv "WLAN_SSID"}".psk = builtins.getEnv "WLAN_PASS";
