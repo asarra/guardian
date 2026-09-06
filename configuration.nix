@@ -33,20 +33,10 @@ in
     loader = { # Bootloader
       efi.canTouchEfiVariables = true;
       timeout = 5;
-      grub = { # GRUB 2 > Systemd-boot
+      systemd-boot = {
         enable = true;
-        efiSupport = true;
-        devices = ["nodev"];
         configurationLimit = 3;
-        # More entries
-        useOSProber = true;
         memtest86.enable = true;
-        extraEntries = ''
-            menuentry "Reboot" { reboot }
-            menuentry "Power off" { halt }
-            menuentry "BIOS" { fwsetup }
-        '';
-      };
     };
 
     # Kernel
