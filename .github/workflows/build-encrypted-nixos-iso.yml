@@ -27,6 +27,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: guardian-encrypted-iso
           path: guardian-secure-installer.7z
           retention-days: 1
