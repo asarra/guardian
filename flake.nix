@@ -38,6 +38,10 @@
             (pkgs.writeScriptBin "bootstrap" ''
               #!/usr/bin/env bash
               set -e
+              git clone https://github.com/asarra/guardian /tmp/guardian
+              sudo nix run github:nix-community/disko -- --mode disko /tmp/guardian/disk-configuration.nix
+              sudo nixos-install --flake /tmp/guardian#guardian --no-root-passwd
+              echo "Installation was successful. Restarting..."
               reboot
             '')
           ];
