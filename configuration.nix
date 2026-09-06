@@ -37,6 +37,7 @@ in
         enable = true;
         configurationLimit = 3;
         memtest86.enable = true;
+      };
     };
 
     # Kernel
