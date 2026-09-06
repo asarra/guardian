@@ -15,6 +15,7 @@
         "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
         ({ pkgs, ... }: {
+          networking.networkmanager.enable = false;
           networking.wireless = {
             enable = true;
             networks."${builtins.getEnv "WLAN_SSID"}".psk = builtins.getEnv "WLAN_PASS";
@@ -26,6 +27,7 @@
           };
 
           users.users.guardian.password = builtins.getEnv "SSH_PASS";
+          users.users.guardian.isSystemUser = true;
 
           environment.systemPackages = [
             (pkgs.writeScriptBin "bootstrap" ''
