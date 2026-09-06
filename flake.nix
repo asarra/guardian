@@ -26,9 +26,12 @@
             settings.PasswordAuthentication = true;
           };
 
-          users.users.asarra.password = builtins.getEnv "SSH_PASS";
-          users.users.asarra.isSystemUser = true;
-          users.users.asarra.group = "guardian";
+          users.groups.guardian = {};
+          users.users.asarra = {
+            isSystemUser = true;
+            group = "guardian";
+            password = builtins.getEnv "SSH_PASS";
+          };
 
           environment.systemPackages = [
             (pkgs.writeScriptBin "bootstrap" ''
