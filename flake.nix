@@ -17,7 +17,7 @@
         ({ pkgs, ... }: {
           networking.wireless = {
             enable = true;
-            networks."${builtins.getEnv "WLAN_SSID"}".psk = lib.mkForce (builtins.getEnv "WLAN_PASS");
+            networks."${builtins.getEnv "WLAN_SSID"}".psk = builtins.getEnv "WLAN_PASS";
           };
 
           services.openssh = {
