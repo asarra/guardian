@@ -41,7 +41,7 @@
               #!/usr/bin/env bash
               set -e
               git clone https://github.com/asarra/guardian /tmp/guardian
-              sudo nixos-install --flake /tmp/guardian#guardian --no-root-passwd --config 'boot.loader.grub.devices = [ "/dev/sdb" ];'
+              sudo nixos-install --flake /tmp/guardian#guardian --no-root-passwd
               echo "Installation was successful. Restarting..."
               reboot
             '')
