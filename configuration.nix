@@ -1,4 +1,3 @@
-# Note: I refuse to use flake.nix and home manager.
 # Recover fix tip: boot into live iso, lsblk, sudo nixos-enter --root <Mounted_Device_Path>, su - asarra, (commands), exit
 # Gems: https://github.com/gianarb/dotfiles/tree/12ab8fa01d3d8efd0e96f7287a2447df3013a17f https://github.com/NixOS/nixos-hardware https://nix.dev/manual/nix/2.23/language/builtins
 # Flow: Grapical install first without swap. We'll add swap file later. This way we won't have to touch hardware-configuration.nix at all
