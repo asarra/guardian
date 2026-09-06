@@ -1,11 +1,9 @@
 Setup steps after a fresh, minimal, bare metal NixOs install on the local machine (physical access):
 -
-- nmtui
-- ping google.de
-- cd /etc/nixos && sudo git clone https://github.com/asarra/guardian
-- cd guardian && sudo mv configuration.nix install.sh deploy.sh ..
-- cd .. && sudo rm -rf guardian
-- sudo bash ./install.sh
+- Download the pipeline artefact
+- cd ~/Downloads && 7z x artifact.zip && 7z x -p'Password' guardian-secure-installer.7z
+- sudo dd if=/var/home/nix/Downloads/guardian-installer.iso of=/dev/sdb bs=4M status=progress oflag=sync (run "lsblk", if you do want to be sure)
+- cd ~/ansible && ansible-playbook private_tailscale_deployment.yaml -i inventory.ini
 
 On your own machine, you then run: ansible-playbook private_tailscale_deployment.yaml -i inventory.ini.
 You need your tailscale authkey, inventory.ini and colt's private key files.
