@@ -1,0 +1,35 @@
+name: Build Encrypted Installer ISO
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+      - uses: DeterminateSystems/flake-checker-action@main
+
+      - name: Build ISO with Secrets
+        env:
+          WLAN_SSID: ${{ secrets.WLAN_SSID }}
+          WLAN_PASS: ${{ secrets.WLAN_PASS }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+        run: nix build .#nixosConfigurations.installerISO.config.system.build.isoImage --impure
+
+      - run: nix flake check --impure
+        env:
+          WLAN_SSID: ${{ secrets.WLAN_SSID }}
+          WLAN_PASS: ${{ secrets.WLAN_PASS }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+
+      - name: Compress and Encrypt ISO (AES-256)
+        run: |
+          cp "$(readlink -f result/iso/*.iso)" ./guardian-installer.iso
+          7z a -p"${{ secrets.ISO_ZIP_PASS }}" -mhe=on guardian-secure-installer.7z ./guardian-installer.iso
+
+      - uses: actions/upload-artifact@v4
+        with:
+          path: guardian-secure-installer.7z
+          retention-days: 1
+          compression-level: 0
