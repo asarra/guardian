@@ -1,0 +1,156 @@
+# "raw: sh -c" instead of "shell:" and "command:" because we do not use python on the target systems
+
+- name: Bootstrap hypervisor
+  hosts: hypervisor
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Wait for the server to boot
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        port: 22
+        delay: 15
+        timeout: 300
+      delegate_to: localhost
+
+    - name: Pre-check
+      raw: sh -c "readlink -f /run/current-system | grep 'guardian'"
+      register: hypervisor_installed
+      failed_when: hypervisor_installed.rc not in [0,1]
+
+    - name: Stop playbook if hypervisor is already installed
+      fail:
+        msg: "Stopping playbook: hypervisor is already installed"
+      when: hypervisor_installed.rc == 0
+
+    - name: Bootstrapping hypervisor
+      raw: sh -c "bootstrap"
+      become: true
+
+
+- name: Check vm health and Find vm ip
+  hosts: hypervisor
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Wait for the server to reboot
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        port: 22
+        delay: 15
+        timeout: 300
+      delegate_to: localhost
+
+    - name: Check if deployment was successful in a finite loop
+      raw: sh -c "virsh -c qemu:///system dominfo colt-vm 2>&1 | grep -E '^State:.*running'"
+      register: deployment_check
+      until: deployment_check.rc == 0
+      retries: 10
+      delay: 15
+      failed_when: false
+
+    - name: Stop playbook if deployment wasn't successful
+      fail:
+        msg: "Stopping playbook: colt vm deployment wasn't successful"
+      when: deployment_check.rc != 0
+
+    - name: Wait and get VM IPv4 of colt vm
+      raw: >
+        sh -c "until IP=\$(virsh -c qemu:///system domifaddr colt-vm 2>/dev/null | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -n 1) && [ ! -z \"\$IP\" ]; do sleep 2; done; echo \$IP"
+      register: colt_vm_ip
+
+    - name: Adding the colt vm with ProxyJump settings as an ansible host
+      add_host:
+        name: "colt_vm"
+        ansible_host: "{{ colt_vm_ip.stdout.strip() }}"
+        ansible_user: core
+        ansible_ssh_private_key_file: "~/.ssh/colt"
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand=\"sshpass -p '{{ hostvars[inventory_hostname]['ansible_password'] | default(hostvars[inventory_hostname]['ansible_ssh_pass']) }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p -l asarra {{ inventory_hostname }}\""
+
+
+- name: Tests the initial connection to the colt vm
+  hosts: colt_vm
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Waiting for the initial connection
+      wait_for_connection:
+        delay: 15
+        timeout: 900
+
+
+- name: Finalizing the transition of colt vm
+  hosts: colt_vm
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Waiting for the connection
+      wait_for_connection:
+        delay: 15
+        timeout: 900
+
+    - name: Waiting for the final rebase to succeed
+      wait_for:
+        path: /etc/ucore-autorebase/signed
+        state: present
+        delay: 30
+        timeout: 1500
+      become: true
+
+
+- name: Sets up the colt vm after the reboot
+  hosts: colt_vm
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Waiting for the connection
+      wait_for_connection:
+        delay: 30
+        timeout: 300
+
+    - name: Enabling and starting tailscale
+      systemd_service:
+        name: tailscaled
+        enabled: true
+        state: started
+      become: true
+
+    - name: Wait for tailscaled socket to be ready
+      wait_for:
+        path: /var/run/tailscale/tailscaled.sock
+        state: present
+        timeout: 10
+
+    - name: Logging into tailscale
+      command: tailscale up --authkey "{{ lookup('file', './tskey-auth') }}"
+      become: true
+
+    - name: Giving tailscale the time it needs to connect
+      pause:
+        seconds: 5
+
+    - name: Wait for homelab-docker setup to complete
+      command: systemctl is-active homelab-docker.service
+      register: docker_check
+      until: docker_check.rc == 0
+      retries: 30
+      delay: 20
+      become: true
+
+    - name: Starting tailscale Serve
+      systemd_service:
+        name: tailscale-serve
+        state: started
+      become: true
+      register: serve_start
+      until: serve_start is success
+      retries: 3
+      delay: 3
+
+    - name: Save tailscale serve endpoints
+      command: tailscale serve status
+      register: tailscale_serve_output
+
+    - name: Display Tailscale Serve Endpoints
+      debug:
+        var: tailscale_serve_output.stdout_lines
